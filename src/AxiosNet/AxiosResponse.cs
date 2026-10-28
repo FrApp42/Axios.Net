@@ -21,13 +21,3 @@ public class AxiosResponse
     /// <summary>Untyped body: the converted value, or the (transformed) body text on error responses.</summary>
     public object? Data { get; init; }
 }
-
-public class AxiosResponse<T> : AxiosResponse
-{
-    /// <summary>Body converted to <typeparamref name="T"/> (default when empty).</summary>
-    public new T? Data
-    {
-        get => base.Data is T value ? value : default;
-        init => base.Data = value;
-    }
-}

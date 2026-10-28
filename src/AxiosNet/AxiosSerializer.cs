@@ -61,7 +61,7 @@ internal static partial class AxiosSerializer
         if (options?.Serialize is { } custom) return custom(config.Params);
 
         Func<string, string> encode = options?.Encode ?? DefaultEncode;
-        var pairs = Flatten(config.Params, false, options?.Indexes ?? false, true, options?.MaxDepth ?? 100, config, new(JsonSerializerDefaults.Web));
+        var pairs = Flatten(config.Params, false, options is null ? false : options.Indexes, true, options?.MaxDepth ?? 100, config, new(JsonSerializerDefaults.Web));
 
         return string.Join("&", pairs.Select(p => $"{encode(p.Key)}={encode(Stringify(p.Value))}"));
     }
@@ -172,7 +172,13 @@ internal static partial class AxiosSerializer
     private static IEnumerable<KeyValuePair<string, object?>> Root(object data, JsonSerializerOptions json)
     {
         if (data is IDictionary dictionary)
-            return dictionary.Cast<DictionaryEntry>().Select(e => new KeyValuePair<string, object?>(e.Key.ToString() ?? string.Empty, e.Value));
+        {
+            List<KeyValuePair<string, object?>> entries = [];
+            foreach (DictionaryEntry entry in dictionary)
+                entries.Add(new(entry.Key.ToString() ?? string.Empty, entry.Value));
+
+            return entries;
+        }
 
         JsonElement element = JsonSerializer.SerializeToElement(data, json);
 

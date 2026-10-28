@@ -1,4 +1,4 @@
-namespace AxiosNet;
+namespace AxiosNet.Models;
 
 /// <summary>A file part for multipart bodies.</summary>
 public sealed class AxiosFile

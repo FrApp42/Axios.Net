@@ -1,4 +1,4 @@
-namespace AxiosNet;
+namespace AxiosNet.Config;
 
 /// <summary>Controls how <see cref="AxiosRequestConfig.Params"/> are turned into a query string.</summary>
 public class AxiosParamsSerializer

@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace AxiosNet;
+namespace AxiosNet.Config;
 
 public class AxiosProxy
 {

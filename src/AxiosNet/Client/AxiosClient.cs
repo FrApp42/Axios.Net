@@ -5,8 +5,14 @@ using System.Net.Http.Headers;
 using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Text.Json;
+using AxiosNet.Config;
+using AxiosNet.Errors;
+using AxiosNet.Interceptors;
+using AxiosNet.Models;
+using AxiosNet.Progress;
+using AxiosNet.Serialization;
 
-namespace AxiosNet;
+namespace AxiosNet.Client;
 
 public class AxiosClient
 {

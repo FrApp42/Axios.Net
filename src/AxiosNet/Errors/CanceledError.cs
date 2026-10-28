@@ -1,4 +1,6 @@
-namespace AxiosNet;
+using AxiosNet.Config;
+
+namespace AxiosNet.Errors;
 
 /// <summary>Thrown when a request is canceled through <see cref="AxiosRequestConfig.CancellationToken"/>.</summary>
 public class CanceledError : AxiosException

@@ -1,6 +1,7 @@
 using System.Diagnostics;
+using AxiosNet.Models;
 
-namespace AxiosNet;
+namespace AxiosNet.Progress;
 
 /// <summary>Turns raw byte counts into throttled <see cref="AxiosProgressEvent"/> callbacks.</summary>
 internal sealed class ProgressTracker(Action<AxiosProgressEvent> callback, bool upload, long? total)

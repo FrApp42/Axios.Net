@@ -1,4 +1,4 @@
-namespace AxiosNet;
+namespace AxiosNet.Interceptors;
 
 internal sealed record InterceptorHandler<T>(
     int Id,

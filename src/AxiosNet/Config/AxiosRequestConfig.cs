@@ -1,4 +1,7 @@
-namespace AxiosNet;
+using AxiosNet.Errors;
+using AxiosNet.Models;
+
+namespace AxiosNet.Config;
 
 /// <summary>
 /// Configuration of a request. Used both as client defaults and per request.

@@ -1,4 +1,4 @@
-namespace AxiosNet;
+namespace AxiosNet.Progress;
 
 internal sealed class CountingStream(Stream inner, Action<long> onWrite) : Stream
 {

@@ -1,4 +1,6 @@
-namespace AxiosNet;
+using AxiosNet.Config;
+
+namespace AxiosNet.Interceptors;
 
 public sealed class InterceptorOptions
 {

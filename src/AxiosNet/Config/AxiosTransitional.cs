@@ -1,4 +1,4 @@
-namespace AxiosNet;
+namespace AxiosNet.Config;
 
 public class AxiosTransitional
 {

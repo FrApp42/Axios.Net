@@ -1,4 +1,4 @@
-namespace AxiosNet;
+namespace AxiosNet.Interceptors;
 
 public sealed class InterceptorManager<T>
 {

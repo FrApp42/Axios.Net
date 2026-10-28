@@ -1,6 +1,8 @@
 using System.Collections;
+using AxiosNet.Config;
+using AxiosNet.Models;
 
-namespace AxiosNet;
+namespace AxiosNet.Errors;
 
 /// <summary>
 /// Thrown when a request fails: rejected status, timeout, cancellation, network error or bad configuration.

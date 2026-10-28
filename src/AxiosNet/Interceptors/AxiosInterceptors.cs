@@ -1,4 +1,7 @@
-namespace AxiosNet;
+using AxiosNet.Config;
+using AxiosNet.Models;
+
+namespace AxiosNet.Interceptors;
 
 public sealed class AxiosInterceptors
 {

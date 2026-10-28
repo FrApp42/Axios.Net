@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace AxiosNet;
+namespace AxiosNet.Models;
 
 /// <summary>Case-insensitive header collection, modeled after axios' <c>AxiosHeaders</c>.</summary>
 public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>

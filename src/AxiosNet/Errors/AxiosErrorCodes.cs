@@ -1,4 +1,4 @@
-namespace AxiosNet;
+namespace AxiosNet.Errors;
 
 /// <summary>Values of <see cref="AxiosException.Code"/>, same identifiers as axios.</summary>
 public static class AxiosErrorCodes

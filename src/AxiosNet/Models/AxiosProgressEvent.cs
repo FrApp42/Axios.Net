@@ -1,4 +1,4 @@
-namespace AxiosNet;
+namespace AxiosNet.Models;
 
 public sealed class AxiosProgressEvent
 {

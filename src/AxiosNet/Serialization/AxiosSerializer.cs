@@ -4,8 +4,11 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using AxiosNet.Config;
+using AxiosNet.Errors;
+using AxiosNet.Models;
 
-namespace AxiosNet;
+namespace AxiosNet.Serialization;
 
 /// <summary>Query string, urlencoded and multipart serialization shared by the client and the public helpers.</summary>
 internal static partial class AxiosSerializer

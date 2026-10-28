@@ -1,6 +1,7 @@
 using System.Net;
+using AxiosNet.Models;
 
-namespace AxiosNet;
+namespace AxiosNet.Progress;
 
 /// <summary>Wraps request content to report upload progress while it is written to the wire.</summary>
 internal sealed class ProgressContent : HttpContent

@@ -1,7 +1,12 @@
 using System.Reflection;
 using System.Text.Json;
+using AxiosNet.Config;
+using AxiosNet.Errors;
+using AxiosNet.Interceptors;
+using AxiosNet.Models;
+using AxiosNet.Serialization;
 
-namespace AxiosNet;
+namespace AxiosNet.Client;
 
 /// <summary>
 /// Default shared client, mirroring the axios top-level API:

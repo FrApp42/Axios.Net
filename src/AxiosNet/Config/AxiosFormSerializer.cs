@@ -1,4 +1,4 @@
-namespace AxiosNet;
+namespace AxiosNet.Config;
 
 /// <summary>Controls multipart and urlencoded serialization of object bodies.</summary>
 public class AxiosFormSerializer

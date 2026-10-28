@@ -1,5 +1,9 @@
 using System.Net;
 using System.Text;
+using AxiosNet.Client;
+using AxiosNet.Config;
+using AxiosNet.Errors;
+using AxiosNet.Models;
 
 namespace AxiosNet.Tests;
 

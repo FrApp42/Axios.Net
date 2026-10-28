@@ -12,11 +12,15 @@
     <Title>Axios.Net</Title>
     <Version>0.1.0</Version>
     <Authors>FrenchyApps42, Sikelio</Authors>
+    <Copyright>Copyright (C) 2026 Frenchy Apps 42</Copyright>
     <Description>An axios-like HTTP client for .NET: Axios.Get&lt;T&gt;(url), Axios.Create(config), interceptors, request config merging, params and form serialization, progress, cancellation and typed errors.</Description>
     <PackageTags>axios;http;httpclient;rest;api;interceptors;client</PackageTags>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/FrApp42/Axios.Net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/FrApp42/Axios.Net.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Label="Build">

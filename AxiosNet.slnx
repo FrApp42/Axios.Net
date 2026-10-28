@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AxiosNet/AxiosNet.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AxiosNet.Tests/AxiosNet.Tests.csproj" />
+  </Folder>
+</Solution>

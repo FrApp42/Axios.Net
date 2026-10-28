@@ -60,7 +60,7 @@ public static class Axios
     public static string GetUri(AxiosRequestConfig? config = null) => Instance.GetUri(config);
 
     /// <summary>Waits for every request, like <c>axios.all</c>.</summary>
-    public static Task<T[]> All<T>(params IEnumerable<Task<T>> requests) => Task.WhenAll(requests);
+    public static Task<T[]> All<T>(params Task<T>[] requests) => Task.WhenAll(requests);
 
     /// <summary>True when <paramref name="error"/> comes from axios (any <see cref="AxiosException"/>).</summary>
     public static bool IsAxiosError(object? error) => error is AxiosException;

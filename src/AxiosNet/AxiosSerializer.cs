@@ -25,10 +25,15 @@ internal static partial class AxiosSerializer
     public static string BuildUrl(AxiosRequestConfig config)
     {
         string url = config.Url ?? string.Empty;
+
         bool absolute = AbsoluteUrl().IsMatch(url);
 
-        if (url.StartsWith("http:", StringComparison.OrdinalIgnoreCase) && !url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-            url.StartsWith("https:", StringComparison.OrdinalIgnoreCase) && !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        if (
+            url.StartsWith("http:", StringComparison.OrdinalIgnoreCase)
+            && !url.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+            || url.StartsWith("https:", StringComparison.OrdinalIgnoreCase)
+            && !url.StartsWith("https://", StringComparison.OrdinalIgnoreCase)
+        )
         {
             throw new AxiosException($"Invalid URL: {url}", AxiosErrorCodes.InvalidUrl, config);
         }
@@ -41,53 +46,109 @@ internal static partial class AxiosSerializer
         }
 
         int hash = url.IndexOf('#');
-        if (hash >= 0) url = url[..hash];
+
+        if (hash >= 0)
+        {
+            url = url[..hash];
+        }
 
         string query = BuildQuery(config);
+
         if (query.Length > 0)
+        {
             url += (url.Contains('?') ? "&" : "?") + query;
+        }
 
         if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri) || uri.Scheme is not ("http" or "https"))
+        {
             throw new AxiosException($"Invalid URL: {url}", AxiosErrorCodes.InvalidUrl, config);
+        }
 
         return url;
     }
 
     private static string BuildQuery(AxiosRequestConfig config)
     {
-        if (config.Params.Count == 0) return string.Empty;
+        if (config.Params.Count == 0)
+        {
+            return string.Empty;
+        }
 
         AxiosParamsSerializer? options = config.ParamsSerializer;
-        if (options?.Serialize is { } custom) return custom(config.Params);
+
+        if (options?.Serialize is { } custom)
+        {
+            return custom(config.Params);
+        }
 
         Func<string, string> encode = options?.Encode ?? DefaultEncode;
-        var pairs = Flatten(config.Params, false, options is null ? false : options.Indexes, true, options?.MaxDepth ?? 100, config, new(JsonSerializerDefaults.Web));
 
-        return string.Join("&", pairs.Select(p => $"{encode(p.Key)}={encode(Stringify(p.Value))}"));
+        var pairs = Flatten(
+            config.Params,
+            false,
+            options is null
+                ? false
+                : options.Indexes, true,
+            options?.MaxDepth ?? 100,
+            config, new(JsonSerializerDefaults.Web)
+        );
+
+        return string.Join(
+            "&", pairs.Select(p => $"{encode(p.Key)}={encode(Stringify(p.Value))}")
+        );
     }
 
     public static string BuildUrlEncoded(object data, AxiosRequestConfig config, JsonSerializerOptions json)
     {
         AxiosFormSerializer form = config.FormSerializer ?? new();
-        var pairs = Flatten(Root(data, json), form.Dots, form.Indexes, form.MetaTokens, form.MaxDepth, config, json);
 
-        return string.Join("&", pairs.Select(p => $"{DefaultEncode(p.Key)}={DefaultEncode(Stringify(p.Value))}"));
+        var pairs = Flatten(
+            Root(data, json),
+            form.Dots,
+            form.Indexes,
+            form.MetaTokens,
+            form.MaxDepth,
+            config,
+            json
+        );
+
+        return string.Join(
+            "&", pairs.Select(p => $"{DefaultEncode(p.Key)}={DefaultEncode(Stringify(p.Value))}")
+        );
     }
 
-    public static MultipartFormDataContent BuildMultipart(object data, AxiosRequestConfig config, JsonSerializerOptions json)
+    public static MultipartFormDataContent BuildMultipart(
+        object data,
+        AxiosRequestConfig config,
+        JsonSerializerOptions json
+    )
     {
         AxiosFormSerializer form = config.FormSerializer ?? new();
         MultipartFormDataContent multipart = new();
 
-        foreach (var (key, value) in Flatten(Root(data, json), form.Dots, form.Indexes, form.MetaTokens, form.MaxDepth, config, json))
+        foreach (
+            var (key, value) in Flatten(
+                Root(data, json),
+                form.Dots,
+                form.Indexes,
+                form.MetaTokens,
+                form.MaxDepth,
+                config,
+                json
+            )
+        )
         {
             switch (value)
             {
                 case AxiosFile { Content: byte[] bytes } file:
-                    multipart.Add(WithType(new ByteArrayContent(bytes), file.ContentType), key, file.FileName);
+                    multipart.Add(
+                        WithType(new ByteArrayContent(bytes), file.ContentType), key, file.FileName
+                    );
                     break;
                 case AxiosFile { Content: Stream stream } file:
-                    multipart.Add(WithType(new StreamContent(stream), file.ContentType), key, file.FileName);
+                    multipart.Add(
+                        WithType(new StreamContent(stream), file.ContentType), key, file.FileName
+                    );
                     break;
                 case byte[] bytes:
                     multipart.Add(new ByteArrayContent(bytes), key, "blob");
@@ -116,12 +177,19 @@ internal static partial class AxiosSerializer
         object? data = config.Data;
 
         if (config.TransformRequest is { } transforms)
-            foreach (var transform in transforms) data = transform(data, headers);
+        {
+            foreach (var transform in transforms)
+            {
+                data = transform(data, headers);
+            }
+        }
 
         string? contentType = headers.Get("Content-Type");
+
         headers.Delete("Content-Type");
 
         HttpContent? content;
+
         switch (data)
         {
             case null:
@@ -143,20 +211,33 @@ internal static partial class AxiosSerializer
                 break;
             default:
                 if (contentType?.Contains("multipart/form-data", StringComparison.OrdinalIgnoreCase) == true)
+                {
                     return BuildMultipart(data, config, json);
+                }
 
-                if (contentType?.Contains("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase) == true)
+                if (
+                    contentType?.Contains(
+                        "application/x-www-form-urlencoded",
+                        StringComparison.OrdinalIgnoreCase
+                    ) == true
+                )
+                {
                     content = new StringContent(BuildUrlEncoded(data, config, json), Encoding.UTF8);
+                }
                 else
                 {
                     content = new StringContent(JsonSerializer.Serialize(data, json), Encoding.UTF8);
+
                     contentType ??= "application/json";
                 }
+
                 break;
         }
 
         if (contentType is not null && MediaTypeHeaderValue.TryParse(contentType, out MediaTypeHeaderValue? parsed))
+        {
             content.Headers.ContentType = parsed;
+        }
 
         return content;
     }
@@ -164,7 +245,9 @@ internal static partial class AxiosSerializer
     private static HttpContent WithType(HttpContent content, string? contentType)
     {
         if (contentType is not null && MediaTypeHeaderValue.TryParse(contentType, out var parsed))
+        {
             content.Headers.ContentType = parsed;
+        }
 
         return content;
     }
@@ -174,8 +257,11 @@ internal static partial class AxiosSerializer
         if (data is IDictionary dictionary)
         {
             List<KeyValuePair<string, object?>> entries = [];
+
             foreach (DictionaryEntry entry in dictionary)
+            {
                 entries.Add(new(entry.Key.ToString() ?? string.Empty, entry.Value));
+            }
 
             return entries;
         }
@@ -198,31 +284,47 @@ internal static partial class AxiosSerializer
         bool metaTokens,
         int maxDepth,
         AxiosRequestConfig config,
-        JsonSerializerOptions json)
+        JsonSerializerOptions json
+    )
     {
         List<KeyValuePair<string, object>> result = [];
 
         foreach (var (key, value) in root)
+        {
             Walk(key, value, 1);
+        }
 
         return result;
 
         void Walk(string key, object? value, int depth)
         {
-            if (value is null) return;
+            if (value is null)
+            {
+                return;
+            }
 
             if (depth > maxDepth)
-                throw new AxiosException($"Object is too deeply nested ({maxDepth} levels max)", AxiosErrorCodes.FormDataDepthExceeded, config);
+            {
+                throw new AxiosException(
+                    $"Object is too deeply nested ({maxDepth} levels max)",
+                    AxiosErrorCodes.FormDataDepthExceeded,
+                    config
+                );
+            }
 
             if (key.EndsWith("{}", StringComparison.Ordinal))
             {
-                result.Add(new(metaTokens ? key : key[..^2], JsonSerializer.Serialize(value, json)));
+                result.Add(
+                    new(metaTokens ? key : key[..^2], JsonSerializer.Serialize(value, json))
+                );
+
                 return;
             }
 
             switch (value)
             {
-                case string or bool or char or Guid or DateTime or DateTimeOffset or Enum or byte[] or Stream or HttpContent or AxiosFile:
+                case string or bool or char or Guid or DateTime or DateTimeOffset or Enum or byte[] or Stream
+                    or HttpContent or AxiosFile:
                 case IFormattable:
                     result.Add(new(key, value));
                     break;
@@ -231,7 +333,10 @@ internal static partial class AxiosSerializer
                     break;
                 case IDictionary dictionary:
                     foreach (DictionaryEntry entry in dictionary)
+                    {
                         Walk(Join(key, entry.Key.ToString() ?? string.Empty), entry.Value, depth + 1);
+                    }
+
                     break;
                 case IEnumerable list:
                     WalkList(key, list.Cast<object?>(), depth);
@@ -248,10 +353,19 @@ internal static partial class AxiosSerializer
             {
                 case JsonValueKind.Object:
                     if (depth + 1 > maxDepth)
-                        throw new AxiosException($"Object is too deeply nested ({maxDepth} levels max)", AxiosErrorCodes.FormDataDepthExceeded, config);
+                    {
+                        throw new AxiosException(
+                            $"Object is too deeply nested ({maxDepth} levels max)",
+                            AxiosErrorCodes.FormDataDepthExceeded,
+                            config
+                        );
+                    }
 
                     foreach (JsonProperty property in element.EnumerateObject())
+                    {
                         WalkElement(Join(key, property.Name), property.Value, depth + 1);
+                    }
+
                     break;
                 case JsonValueKind.Array:
                     WalkList(key, element.EnumerateArray().Cast<object?>(), depth);
@@ -268,6 +382,7 @@ internal static partial class AxiosSerializer
         void WalkList(string key, IEnumerable<object?> items, int depth)
         {
             int index = 0;
+
             foreach (object? item in items)
             {
                 string itemKey = indexes switch
@@ -278,6 +393,7 @@ internal static partial class AxiosSerializer
                 };
 
                 Walk(itemKey, item, depth + 1);
+
                 index++;
             }
         }

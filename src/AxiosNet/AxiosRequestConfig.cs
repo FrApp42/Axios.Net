@@ -28,9 +28,13 @@ public class AxiosRequestConfig
     public Dictionary<string, AxiosHeaders> MethodHeaders { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>Shortcut for <c>MethodHeaders["common"]</c>.</summary>
-    public AxiosHeaders CommonHeaders => MethodHeaders.TryGetValue("common", out var h) ? h : MethodHeaders["common"] = new();
+    public AxiosHeaders CommonHeaders =>
+        MethodHeaders.TryGetValue("common", out var h) ? h : MethodHeaders["common"] = new();
 
-    /// <summary>Query string parameters. Null values are skipped; arrays and nested objects follow <see cref="ParamsSerializer"/>.</summary>
+    /// <summary>
+    /// Query string parameters. Null values are skipped; arrays and nested objects follow
+    /// <see cref="ParamsSerializer"/>.
+    /// </summary>
     public Dictionary<string, object?> Params { get; set; } = [];
 
     public AxiosParamsSerializer? ParamsSerializer { get; set; }
@@ -75,10 +79,14 @@ public class AxiosRequestConfig
     /// <summary>Maximum redirects followed; 0 disables redirects. Needs the built-in handler.</summary>
     public int? MaxRedirects { get; set; }
 
-    /// <summary>Automatically decompress gzip, deflate and brotli responses. Defaults to true. Needs the built-in handler.</summary>
+    /// <summary>
+    /// Automatically decompress gzip, deflate and brotli responses. Defaults to true. Needs the built-in handler.
+    /// </summary>
     public bool? Decompress { get; set; }
 
-    /// <summary>Proxy settings; <see cref="AxiosProxy.Disabled"/> ignores system proxies. Needs the built-in handler.</summary>
+    /// <summary>
+    /// Proxy settings; <see cref="AxiosProxy.Disabled"/> ignores system proxies. Needs the built-in handler.
+    /// </summary>
     public AxiosProxy? Proxy { get; set; }
 
     public Action<AxiosProgressEvent>? OnUploadProgress { get; set; }
@@ -132,11 +140,20 @@ public class AxiosRequestConfig
             Headers = Headers.Concat(other?.Headers ?? new())
         };
 
-        foreach (var param in Params) merged.Params[param.Key] = param.Value;
-        foreach (var param in other?.Params ?? []) merged.Params[param.Key] = param.Value;
+        foreach (var param in Params)
+        {
+            merged.Params[param.Key] = param.Value;
+        }
+        
+        foreach (var param in other?.Params ?? [])
+        {
+            merged.Params[param.Key] = param.Value;
+        }
 
         foreach (var (method, headers) in MethodHeaders)
+        {
             merged.MethodHeaders[method] = headers.Clone();
+        }
 
         foreach (var (method, headers) in other?.MethodHeaders ?? [])
         {

@@ -16,6 +16,7 @@ internal sealed class ProgressTracker(Action<AxiosProgressEvent> callback, bool 
     public void Add(long bytes)
     {
         _loaded += bytes;
+
         bool done = total.HasValue && _loaded >= total.Value;
 
         if (done || _clock.ElapsedMilliseconds - _reportedAt >= ThrottleMs)
@@ -42,7 +43,9 @@ internal sealed class ProgressTracker(Action<AxiosProgressEvent> callback, bool 
             Progress = total is > 0 ? Math.Min((double)_loaded / total.Value, 1) : null,
             Bytes = bytes,
             Rate = rate,
-            Estimated = total.HasValue && rate > 0 ? TimeSpan.FromSeconds(Math.Max(total.Value - _loaded, 0) / rate) : null,
+            Estimated = total.HasValue && rate > 0
+                ? TimeSpan.FromSeconds(Math.Max(total.Value - _loaded, 0) / rate)
+                : null,
             Upload = upload
         });
 
@@ -65,28 +68,41 @@ internal sealed class ProgressContent : HttpContent
         _length = inner.Headers.ContentLength;
 
         foreach (var header in inner.Headers)
+        {
             Headers.TryAddWithoutValidation(header.Key, header.Value);
+        }
     }
 
     protected override Task SerializeToStreamAsync(Stream stream, TransportContext? context) =>
         SerializeToStreamAsync(stream, context, CancellationToken.None);
 
-    protected override async Task SerializeToStreamAsync(Stream stream, TransportContext? context, CancellationToken cancellationToken)
+    protected override async Task SerializeToStreamAsync(
+        Stream stream,
+        TransportContext? context,
+        CancellationToken cancellationToken
+    )
     {
         ProgressTracker tracker = new(_callback, true, _length);
+
         await _inner.CopyToAsync(new CountingStream(stream, tracker.Add), context, cancellationToken);
+
         tracker.Finish();
     }
 
     protected override bool TryComputeLength(out long length)
     {
         length = _length ?? 0;
+
         return _length.HasValue;
     }
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing) _inner.Dispose();
+        if (disposing)
+        {
+            _inner.Dispose();
+        }
+
         base.Dispose(disposing);
     }
 }
@@ -97,7 +113,12 @@ internal sealed class CountingStream(Stream inner, Action<long> onWrite) : Strea
     public override bool CanSeek => false;
     public override bool CanWrite => true;
     public override long Length => throw new NotSupportedException();
-    public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+
+    public override long Position
+    {
+        get => throw new NotSupportedException();
+        set => throw new NotSupportedException();
+    }
 
     public override void Flush() => inner.Flush();
     public override Task FlushAsync(CancellationToken cancellationToken) => inner.FlushAsync(cancellationToken);
@@ -111,9 +132,13 @@ internal sealed class CountingStream(Stream inner, Action<long> onWrite) : Strea
         onWrite(count);
     }
 
-    public override async ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
+    public override async ValueTask WriteAsync(
+        ReadOnlyMemory<byte> buffer,
+        CancellationToken cancellationToken = default
+    )
     {
         await inner.WriteAsync(buffer, cancellationToken);
+
         onWrite(buffer.Length);
     }
 

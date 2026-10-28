@@ -18,7 +18,9 @@ public class AxiosException : Exception
     /// <summary>The request that was sent, when it got that far.</summary>
     public HttpRequestMessage? Request { get; }
 
-    /// <summary>Set when the server answered; <see cref="AxiosResponse.Data"/> holds the (transformed) body text.</summary>
+    /// <summary>
+    /// Set when the server answered; <see cref="AxiosResponse.Data"/> holds the (transformed) body text.
+    /// </summary>
     public AxiosResponse? Response { get; }
 
     public int? Status => Response?.Status;
@@ -31,7 +33,8 @@ public class AxiosException : Exception
         AxiosRequestConfig config,
         HttpRequestMessage? request = null,
         AxiosResponse? response = null,
-        Exception? inner = null) : base(message, inner)
+        Exception? inner = null
+    ) : base(message, inner)
     {
         Code = code;
         Config = config;
@@ -79,11 +82,13 @@ public class AxiosException : Exception
                 return value;
             case IDictionary dictionary:
                 Dictionary<string, object?> copy = [];
+
                 foreach (DictionaryEntry entry in dictionary)
                 {
                     string key = entry.Key?.ToString() ?? string.Empty;
                     copy[key] = redact.Contains(key) ? Redacted : Mask(entry.Value, redact);
                 }
+
                 return copy;
             case IEnumerable list when value is not byte[]:
                 return list.Cast<object?>().Select(item => Mask(item, redact)).ToList();
@@ -96,8 +101,12 @@ public class AxiosException : Exception
 /// <summary>Thrown when a request is canceled through <see cref="AxiosRequestConfig.CancellationToken"/>.</summary>
 public class CanceledError : AxiosException
 {
-    public CanceledError(AxiosRequestConfig config, string message = "canceled", HttpRequestMessage? request = null, Exception? inner = null)
-        : base(message, AxiosErrorCodes.Canceled, config, request, null, inner)
+    public CanceledError(
+        AxiosRequestConfig config,
+        string message = "canceled",
+        HttpRequestMessage? request = null,
+        Exception? inner = null
+    ) : base(message, AxiosErrorCodes.Canceled, config, request, null, inner)
     {
     }
 }

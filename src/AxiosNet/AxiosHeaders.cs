@@ -7,7 +7,9 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
 {
     private readonly Dictionary<string, string> _headers = new(StringComparer.OrdinalIgnoreCase);
 
-    public AxiosHeaders() { }
+    public AxiosHeaders()
+    {
+    }
 
     public AxiosHeaders(IEnumerable<KeyValuePair<string, string>> source)
     {
@@ -22,20 +24,31 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
         get => Get(name);
         set
         {
-            if (value is null) Delete(name);
-            else Set(name, value);
+            if (value is null)
+            {
+                Delete(name);
+            }
+            else
+            {
+                Set(name, value);
+            }
         }
     }
 
     public AxiosHeaders Set(string name, string value)
     {
         _headers[name] = value;
+
         return this;
     }
 
     public AxiosHeaders Set(IEnumerable<KeyValuePair<string, string>> headers)
     {
-        foreach (var (name, value) in headers) _headers[name] = value;
+        foreach (var (name, value) in headers)
+        {
+            _headers[name] = value;
+        }
+
         return this;
     }
 
@@ -51,6 +64,7 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
     public AxiosHeaders Clear()
     {
         _headers.Clear();
+
         return this;
     }
 
@@ -58,7 +72,12 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
     public AxiosHeaders Concat(params AxiosHeaders[] others)
     {
         AxiosHeaders result = Clone();
-        foreach (AxiosHeaders other in others) result.Set(other);
+
+        foreach (AxiosHeaders other in others)
+        {
+            result.Set(other);
+        }
+
         return result;
     }
 
@@ -72,7 +91,11 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
         foreach (string line in raw.Split('\n', StringSplitOptions.RemoveEmptyEntries))
         {
             int colon = line.IndexOf(':');
-            if (colon <= 0) continue;
+
+            if (colon <= 0)
+            {
+                continue;
+            }
 
             headers.Set(line[..colon].Trim(), line[(colon + 1)..].Trim());
         }
@@ -83,7 +106,8 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
     /// <summary>Plain dictionary copy, convenient for serialization.</summary>
     public Dictionary<string, string> ToJson() => new(_headers, StringComparer.OrdinalIgnoreCase);
 
-    public override string ToString() => string.Concat(_headers.Select(h => $"{h.Key}: {h.Value}\n"));
+    public override string ToString()
+        => string.Concat(_headers.Select(h => $"{h.Key}: {h.Value}\n"));
 
     public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => _headers.GetEnumerator();
 

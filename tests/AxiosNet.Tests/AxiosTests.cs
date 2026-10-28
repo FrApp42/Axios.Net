@@ -39,7 +39,7 @@ public class AxiosTests
 
         Assert.AreEqual(200, res.Status);
         Assert.AreEqual("Ada", res.Data!.Name);
-        Assert.AreEqual("https://api.test/v1/users?page=2&tags=a&tags=b%20c&ok=true", handler.Last!.RequestUri!.AbsoluteUri);
+        Assert.AreEqual("https://api.test/v1/users?page=2&tags[]=a&tags[]=b+c&ok=true", handler.Last!.RequestUri!.AbsoluteUri);
     }
 
     [TestMethod]
@@ -64,7 +64,7 @@ public class AxiosTests
         AxiosException ex = await Assert.ThrowsExactlyAsync<AxiosException>(() => api.Get<User>("https://api.test/x"));
 
         Assert.AreEqual(404, ex.Status);
-        Assert.AreEqual("ERR_BAD_RESPONSE", ex.Code);
+        Assert.AreEqual("ERR_BAD_REQUEST", ex.Code);
         Assert.AreEqual("""{"error":"nope"}""", ex.Response!.Data);
     }
 

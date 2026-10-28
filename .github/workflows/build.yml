@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Restore
+        run: dotnet restore Axios.Net.slnx
+
+      - name: Build
+        run: dotnet build Axios.Net.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Axios.Net.slnx --configuration Release --no-build --verbosity normal
+
+      - name: Pack
+        run: dotnet pack src/Axios.Net/Axios.Net.csproj --configuration Release --no-build --output artifacts
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          name: nuget-package
+          path: artifacts/*
+          if-no-files-found: error

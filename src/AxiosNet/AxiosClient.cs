@@ -162,8 +162,43 @@ public class AxiosClient
 
         if (error is not null) ExceptionDispatchInfo.Capture(error).Throw();
 
-        return response as AxiosResponse<T>
-            ?? throw new InvalidOperationException($"A response interceptor must return an {nameof(AxiosResponse)}<{typeof(T).Name}>.");
+        return response as AxiosResponse<T> ?? Coerce<T>(response!);
+    }
+
+    /// <summary>
+    /// Types a response that is not an <see cref="AxiosResponse{T}"/>, typically an error response
+    /// recovered by a rejection interceptor, whose body is still raw text.
+    /// </summary>
+    private AxiosResponse<T> Coerce<T>(AxiosResponse response)
+    {
+        T? data = default;
+
+        if (response.Data is T typed)
+        {
+            data = typed;
+        }
+        else if (response.Data is string text)
+        {
+            try
+            {
+                data = JsonSerializer.Deserialize<T>(text, JsonOptions);
+            }
+            catch (JsonException)
+            {
+                // The body does not fit T: keep the default, the raw text stays on the untyped response.
+            }
+        }
+
+        return new AxiosResponse<T>
+        {
+            Status = response.Status,
+            StatusText = response.StatusText,
+            Headers = response.Headers,
+            Config = response.Config,
+            Request = response.Request,
+            Duration = response.Duration,
+            Data = data
+        };
     }
 
     private Task<AxiosResponse<T>> Send<T>(HttpMethod method, string url, object? data, AxiosRequestConfig? config)

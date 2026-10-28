@@ -3,7 +3,10 @@
 A .NET HTTP client with an [axios](https://axios.rest)-like syntax.
 
 ```csharp
-using AxiosNet;
+using AxiosNet.Client;   // Axios, AxiosClient
+using AxiosNet.Config;   // AxiosRequestConfig, AxiosProxy, ...
+using AxiosNet.Errors;   // AxiosException, CanceledError, AxiosErrorCodes
+using AxiosNet.Models;   // AxiosResponse<T>, AxiosHeaders, AxiosFile, AxiosProgressEvent
 
 // Direct requests
 AxiosResponse<User> res = await Axios.Get<User>("https://api.test/users/1");
@@ -44,6 +47,16 @@ var list = await api.Get<List<User>>("/users", new() { Params = { ["page"] = 2 }
 
 Config precedence: library defaults, then client defaults, then the request config.
 `Url`, `Method` and `Data` are never inherited from defaults; headers and params are merged key by key.
+
+## Namespaces
+
+| Namespace | Types |
+|---|---|
+| `AxiosNet.Client` | `Axios`, `AxiosClient` |
+| `AxiosNet.Config` | `AxiosRequestConfig`, `AxiosParamsSerializer`, `AxiosFormSerializer`, `AxiosTransitional`, `AxiosProxy`, `AxiosResponseType` |
+| `AxiosNet.Errors` | `AxiosException`, `CanceledError`, `AxiosErrorCodes` |
+| `AxiosNet.Models` | `AxiosResponse`, `AxiosResponse<T>`, `AxiosHeaders`, `AxiosFile`, `AxiosProgressEvent` |
+| `AxiosNet.Interceptors` | `AxiosInterceptors`, `InterceptorManager<T>`, `InterceptorOptions` |
 
 ## Request config
 

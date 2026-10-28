@@ -5,8 +5,32 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>AxiosNet</RootNamespace>
-    <Description>Axios-like HTTP client for .NET</Description>
-    <PackageTags>http;axios;client;rest</PackageTags>
   </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <PackageId>Axios.Net</PackageId>
+    <Title>Axios.Net</Title>
+    <Version>0.1.0</Version>
+    <Authors>FrenchyApps42, Sikelio</Authors>
+    <Description>An axios-like HTTP client for .NET: Axios.Get&lt;T&gt;(url), Axios.Create(config), interceptors, request config merging, params and form serialization, progress, cancellation and typed errors.</Description>
+    <PackageTags>axios;http;httpclient;rest;api;interceptors;client</PackageTags>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Build">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>

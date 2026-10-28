@@ -6,22 +6,28 @@ public class AxiosResponse
 
     public string? StatusText { get; init; }
 
-    /// <summary>Response and content headers (case-insensitive).</summary>
-    public Dictionary<string, string> Headers { get; init; } = new(StringComparer.OrdinalIgnoreCase);
+    /// <summary>Response and content headers.</summary>
+    public AxiosHeaders Headers { get; init; } = new();
 
     /// <summary>The config the request was sent with.</summary>
     public AxiosRequestConfig Config { get; init; } = new();
 
-    /// <summary>Untyped body: the deserialized value, or the raw text on error responses.</summary>
+    /// <summary>The request that was sent.</summary>
+    public HttpRequestMessage? Request { get; init; }
+
+    /// <summary>Approximate time taken until the response was fully received.</summary>
+    public TimeSpan Duration { get; init; }
+
+    /// <summary>Untyped body: the converted value, or the (transformed) body text on error responses.</summary>
     public object? Data { get; init; }
 }
 
 public class AxiosResponse<T> : AxiosResponse
 {
-    /// <summary>Body deserialized as <typeparamref name="T"/> (default when empty).</summary>
+    /// <summary>Body converted to <typeparamref name="T"/> (default when empty).</summary>
     public new T? Data
     {
-        get => (T?)base.Data;
+        get => base.Data is T value ? value : default;
         init => base.Data = value;
     }
 }

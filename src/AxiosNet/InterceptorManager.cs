@@ -11,17 +11,16 @@ public sealed class InterceptorManager<T>
     /// </summary>
     public int Use(
         Func<T, Task<T>>? onFulfilled,
-        Func<Exception,
-            Task<T>>? onRejected = null,
+        Func<Exception, Task<T>>? onRejected = null,
         InterceptorOptions? options = null
     )
     {
         lock (_handlers)
         {
             int id = _nextId++;
-            
+
             _handlers.Add(new(id, onFulfilled, onRejected, options));
-            
+
             return id;
         }
     }
@@ -34,7 +33,8 @@ public sealed class InterceptorManager<T>
         return Use(
             value => Task.FromResult(onFulfilled(value)),
             onRejected is null ? null : error => Task.FromResult(onRejected(error)),
-            options);
+            options
+        );
     }
 
     /// <summary>Removes one interceptor. Unknown or already ejected ids are ignored.</summary>

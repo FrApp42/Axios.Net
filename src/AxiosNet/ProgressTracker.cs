@@ -19,7 +19,9 @@ internal sealed class ProgressTracker(Action<AxiosProgressEvent> callback, bool 
         bool done = total.HasValue && _loaded >= total.Value;
 
         if (done || _clock.ElapsedMilliseconds - _reportedAt >= ThrottleMs)
+        {
             Report();
+        }
     }
 
     /// <summary>Flushes a pending event, e.g. when the total is unknown.</summary>

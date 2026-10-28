@@ -85,6 +85,7 @@ public class AxiosException : Exception
                 foreach (DictionaryEntry entry in dictionary)
                 {
                     string key = entry.Key?.ToString() ?? string.Empty;
+
                     copy[key] = redact.Contains(key) ? Redacted : Mask(entry.Value, redact);
                 }
 

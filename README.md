@@ -1,4 +1,4 @@
-# AxiosNet
+# Axios.Net
 
 A .NET HTTP client with an [axios](https://axios.rest)-like syntax.
 
@@ -49,6 +49,8 @@ Config precedence: library defaults, then client defaults, then the request conf
 `Url`, `Method` and `Data` are never inherited from defaults; headers and params are merged key by key.
 
 ## Namespaces
+
+The package and assembly are named `Axios.Net`; the root namespace is `AxiosNet` so that it does not clash with the static `Axios` class.
 
 | Namespace | Types |
 |---|---|

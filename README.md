@@ -2,6 +2,22 @@
 
 A .NET HTTP client with an [axios](https://axios.rest)-like syntax.
 
+## Installation
+
+Axios.Net targets .NET 8 and .NET 10.
+
+```bash
+dotnet add package Axios.Net
+```
+
+Or add it to your project file:
+
+```xml
+<PackageReference Include="Axios.Net" Version="0.1.0" />
+```
+
+## Quick start
+
 ```csharp
 using AxiosNet.Client;   // Axios, AxiosClient
 using AxiosNet.Config;   // AxiosRequestConfig, AxiosProxy, ...

@@ -29,7 +29,7 @@ public class AxiosRequestConfig
 
     /// <summary>Shortcut for <c>MethodHeaders["common"]</c>.</summary>
     public AxiosHeaders CommonHeaders =>
-        MethodHeaders.TryGetValue("common", out var h) ? h : MethodHeaders["common"] = new();
+        MethodHeaders.TryGetValue("common", out AxiosHeaders? h) ? h : MethodHeaders["common"] = new();
 
     /// <summary>
     /// Query string parameters. Null values are skipped; arrays and nested objects follow
@@ -140,24 +140,24 @@ public class AxiosRequestConfig
             Headers = Headers.Concat(other?.Headers ?? new())
         };
 
-        foreach (var param in Params)
+        foreach (KeyValuePair<string, object?> param in Params)
         {
             merged.Params[param.Key] = param.Value;
         }
         
-        foreach (var param in other?.Params ?? [])
+        foreach (KeyValuePair<string, object?> param in other?.Params ?? [])
         {
             merged.Params[param.Key] = param.Value;
         }
 
-        foreach (var (method, headers) in MethodHeaders)
+        foreach ((string method, AxiosHeaders headers) in MethodHeaders)
         {
             merged.MethodHeaders[method] = headers.Clone();
         }
 
-        foreach (var (method, headers) in other?.MethodHeaders ?? [])
+        foreach ((string method, AxiosHeaders headers) in other?.MethodHeaders ?? [])
         {
-            merged.MethodHeaders[method] = merged.MethodHeaders.TryGetValue(method, out var existing)
+            merged.MethodHeaders[method] = merged.MethodHeaders.TryGetValue(method, out AxiosHeaders? existing)
                 ? existing.Concat(headers)
                 : headers.Clone();
         }

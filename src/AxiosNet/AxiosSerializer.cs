@@ -83,7 +83,7 @@ internal static partial class AxiosSerializer
 
         Func<string, string> encode = options?.Encode ?? DefaultEncode;
 
-        var pairs = Flatten(
+        List<KeyValuePair<string, object>> pairs = Flatten(
             config.Params,
             false,
             options is null
@@ -102,7 +102,7 @@ internal static partial class AxiosSerializer
     {
         AxiosFormSerializer form = config.FormSerializer ?? new();
 
-        var pairs = Flatten(
+        List<KeyValuePair<string, object>> pairs = Flatten(
             Root(data, json),
             form.Dots,
             form.Indexes,
@@ -127,7 +127,7 @@ internal static partial class AxiosSerializer
         MultipartFormDataContent multipart = new();
 
         foreach (
-            var (key, value) in Flatten(
+            (string key, object value) in Flatten(
                 Root(data, json),
                 form.Dots,
                 form.Indexes,
@@ -178,7 +178,7 @@ internal static partial class AxiosSerializer
 
         if (config.TransformRequest is { } transforms)
         {
-            foreach (var transform in transforms)
+            foreach (Func<object?, AxiosHeaders, object?> transform in transforms)
             {
                 data = transform(data, headers);
             }
@@ -244,7 +244,7 @@ internal static partial class AxiosSerializer
 
     private static HttpContent WithType(HttpContent content, string? contentType)
     {
-        if (contentType is not null && MediaTypeHeaderValue.TryParse(contentType, out var parsed))
+        if (contentType is not null && MediaTypeHeaderValue.TryParse(contentType, out MediaTypeHeaderValue? parsed))
         {
             content.Headers.ContentType = parsed;
         }
@@ -289,7 +289,7 @@ internal static partial class AxiosSerializer
     {
         List<KeyValuePair<string, object>> result = [];
 
-        foreach (var (key, value) in root)
+        foreach ((string key, object? value) in root)
         {
             Walk(key, value, 1);
         }

@@ -15,7 +15,7 @@ internal sealed class ProgressContent : HttpContent
         _callback = callback;
         _length = inner.Headers.ContentLength;
 
-        foreach (var header in inner.Headers)
+        foreach (KeyValuePair<string, IEnumerable<string>> header in inner.Headers)
         {
             Headers.TryAddWithoutValidation(header.Key, header.Value);
         }

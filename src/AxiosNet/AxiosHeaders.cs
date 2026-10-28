@@ -13,7 +13,10 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
 
     public AxiosHeaders(IEnumerable<KeyValuePair<string, string>> source)
     {
-        foreach (var (name, value) in source) _headers[name] = value;
+        foreach ((string name, string value) in source)
+        {
+            _headers[name] = value;
+        }
     }
 
     public int Count => _headers.Count;
@@ -44,7 +47,7 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
 
     public AxiosHeaders Set(IEnumerable<KeyValuePair<string, string>> headers)
     {
-        foreach (var (name, value) in headers)
+        foreach ((string name, string value) in headers)
         {
             _headers[name] = value;
         }

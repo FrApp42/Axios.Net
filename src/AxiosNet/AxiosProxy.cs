@@ -17,6 +17,6 @@ public class AxiosProxy
 
     internal WebProxy ToWebProxy() => new($"{Protocol}://{Host}:{Port}")
     {
-        Credentials = Auth is var (user, password) ? new NetworkCredential(user, password) : null
+        Credentials = Auth is (string user, string password) ? new NetworkCredential(user, password) : null
     };
 }

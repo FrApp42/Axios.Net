@@ -83,7 +83,7 @@ public class AxiosClient
         Exception? error = null;
 
         // Request interceptors run last registered first.
-        foreach (var handler in Interceptors.Request.Snapshot().Reverse())
+        foreach (InterceptorHandler<AxiosRequestConfig> handler in Interceptors.Request.Snapshot().Reverse())
         {
             if (handler.Options?.RunWhen is { } runWhen && !runWhen(merged))
             {
@@ -144,7 +144,7 @@ public class AxiosClient
         }
 
         // Response interceptors run first registered first.
-        foreach (var handler in Interceptors.Response.Snapshot())
+        foreach (InterceptorHandler<AxiosResponse> handler in Interceptors.Response.Snapshot())
         {
             try
             {
@@ -255,14 +255,14 @@ public class AxiosClient
 
         using HttpRequestMessage message = new(method, url) { Content = content };
 
-        if (config.Auth is var (user, password))
+        if (config.Auth is (string user, string password))
         {
             string token = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{user}:{password}"));
 
             headers.Set("Authorization", $"Basic {token}");
         }
 
-        foreach (var (name, value) in headers)
+        foreach ((string name, string value) in headers)
         {
             if (!message.Headers.TryAddWithoutValidation(name, value))
             {
@@ -315,12 +315,12 @@ public class AxiosClient
 
         AxiosHeaders responseHeaders = new();
 
-        foreach (var header in http.Headers)
+        foreach (KeyValuePair<string, IEnumerable<string>> header in http.Headers)
         {
             responseHeaders.Set(header.Key.ToLowerInvariant(), string.Join(", ", header.Value));
         }
 
-        foreach (var header in http.Content.Headers)
+        foreach (KeyValuePair<string, IEnumerable<string>> header in http.Content.Headers)
         {
             responseHeaders.Set(header.Key.ToLowerInvariant(), string.Join(", ", header.Value));
         }
@@ -394,12 +394,12 @@ public class AxiosClient
     {
         AxiosHeaders headers = new() { { "Accept", "application/json, text/plain, */*" } };
 
-        if (config.MethodHeaders.TryGetValue("common", out var common))
+        if (config.MethodHeaders.TryGetValue("common", out AxiosHeaders? common))
         {
             headers.Set(common);
         }
 
-        if (config.MethodHeaders.TryGetValue(method.Method.ToLowerInvariant(), out var specific))
+        if (config.MethodHeaders.TryGetValue(method.Method.ToLowerInvariant(), out AxiosHeaders? specific))
         {
             headers.Set(specific);
         }
@@ -489,7 +489,7 @@ public class AxiosClient
     {
         if (config.TransformResponse is { } transforms)
         {
-            foreach (var transform in transforms)
+            foreach (Func<object?, AxiosHeaders, int, object?> transform in transforms)
             {
                 data = transform(data, headers, status);
             }

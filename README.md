@@ -142,13 +142,13 @@ These axios options are tied to browsers or Node.js and have no equivalent: `ada
 Copyright (C) 2026 Frenchy Apps 42
 
 Axios.Net is free software: you can redistribute it and/or modify it under the terms of the
-[GNU Affero General Public License](LICENSE) as published by the Free Software Foundation, either version 3 of the
+[GNU Affero General Public License](https://github.com/FrApp42/Axios.Net/blob/main/LICENSE) as published by the Free Software Foundation, either version 3 of the
 License,
 or (at your option) any later version (`AGPL-3.0-or-later`).
 
 Axios.Net is distributed in the hope that it will be useful, but **without any warranty**; without even the implied
 warranty of
-merchantability or fitness for a particular purpose. See the [LICENSE](LICENSE) file for the full terms.
+merchantability or fitness for a particular purpose. See the [LICENSE](https://github.com/FrApp42/Axios.Net/blob/main/LICENSE) file for the full terms.
 
 In short: you can use, study, change and share it freely. If you distribute a modified version, **or let other people
 use a

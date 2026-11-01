@@ -25,10 +25,16 @@ internal static partial class AxiosSerializer
         .Replace("%5B", "[", StringComparison.OrdinalIgnoreCase)
         .Replace("%5D", "]", StringComparison.OrdinalIgnoreCase);
 
+    /// <summary>
+    /// Final URL of a request: the base URL is applied, the fragment is dropped and the params are appended
+    /// to the query string.
+    /// </summary>
+    /// <param name="config">The merged request config.</param>
+    /// <returns>An absolute http or https URL.</returns>
+    /// <exception cref="AxiosException">The URL is malformed or not absolute once the base URL is applied.</exception>
     public static string BuildUrl(AxiosRequestConfig config)
     {
         string url = config.Url ?? string.Empty;
-
         bool absolute = AbsoluteUrl().IsMatch(url);
 
         if (

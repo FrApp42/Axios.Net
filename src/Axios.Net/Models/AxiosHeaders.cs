@@ -7,10 +7,13 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
 {
     private readonly Dictionary<string, string> _headers = new(StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>Creates an empty collection.</summary>
     public AxiosHeaders()
     {
     }
 
+    /// <summary>Creates a collection holding a copy of <paramref name="source"/>.</summary>
+    /// <param name="source">The headers to copy.</param>
     public AxiosHeaders(IEnumerable<KeyValuePair<string, string>> source)
     {
         foreach ((string name, string value) in source)
@@ -19,6 +22,7 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
         }
     }
 
+    /// <summary>Number of headers.</summary>
     public int Count => _headers.Count;
 
     /// <summary>Gets a header (null when absent). Assigning null removes it.</summary>
@@ -38,6 +42,9 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
         }
     }
 
+    /// <summary>Sets a header, replacing any previous value.</summary>
+    /// <param name="name">Header name, case-insensitive.</param>
+    /// <param name="value">Header value.</param>
     public AxiosHeaders Set(string name, string value)
     {
         _headers[name] = value;
@@ -45,6 +52,8 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
         return this;
     }
 
+    /// <summary>Sets several headers, replacing any previous values.</summary>
+    /// <param name="headers">The headers to set.</param>
     public AxiosHeaders Set(IEnumerable<KeyValuePair<string, string>> headers)
     {
         foreach ((string name, string value) in headers)
@@ -58,12 +67,16 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
     /// <summary>Enables collection initializers: <c>new AxiosHeaders { { "Accept", "text/plain" } }</c>.</summary>
     public void Add(string name, string value) => Set(name, value);
 
+    /// <summary>Gets a header value, or null when absent.</summary>
     public string? Get(string name) => _headers.GetValueOrDefault(name);
 
+    /// <summary>True when the header is present.</summary>
     public bool Has(string name) => _headers.ContainsKey(name);
 
+    /// <summary>Removes a header and returns whether it was present.</summary>
     public bool Delete(string name) => _headers.Remove(name);
 
+    /// <summary>Removes every header.</summary>
     public AxiosHeaders Clear()
     {
         _headers.Clear();
@@ -84,6 +97,7 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
         return result;
     }
 
+    /// <summary>Returns a copy of this collection.</summary>
     public AxiosHeaders Clone() => new(_headers);
 
     /// <summary>Parses raw "Name: value" lines.</summary>
@@ -109,9 +123,11 @@ public class AxiosHeaders : IEnumerable<KeyValuePair<string, string>>
     /// <summary>Plain dictionary copy, convenient for serialization.</summary>
     public Dictionary<string, string> ToJson() => new(_headers, StringComparer.OrdinalIgnoreCase);
 
+    /// <summary>Raw <c>Name: value</c> lines, one per header.</summary>
     public override string ToString()
         => string.Concat(_headers.Select(h => $"{h.Key}: {h.Value}\n"));
 
+    /// <summary>Enumerates the headers.</summary>
     public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => _headers.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

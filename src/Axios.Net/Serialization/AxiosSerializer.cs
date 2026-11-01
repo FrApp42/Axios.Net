@@ -28,7 +28,6 @@ internal static partial class AxiosSerializer
     public static string BuildUrl(AxiosRequestConfig config)
     {
         string url = config.Url ?? string.Empty;
-
         bool absolute = AbsoluteUrl().IsMatch(url);
 
         if (

@@ -12,5 +12,6 @@ public class AxiosFormSerializer
     /// <summary>Array format, same meaning as <see cref="AxiosParamsSerializer.Indexes"/>.</summary>
     public bool? Indexes { get; set; } = false;
 
+    /// <summary>Maximum nesting depth of an object body; going deeper fails with <see cref="AxiosNet.Errors.AxiosErrorCodes.FormDataDepthExceeded"/>.</summary>
     public int MaxDepth { get; set; } = 100;
 }

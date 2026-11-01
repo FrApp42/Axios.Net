@@ -14,6 +14,7 @@ public class AxiosException : Exception
     /// <summary>One of <see cref="AxiosErrorCodes"/>.</summary>
     public string Code { get; }
 
+    /// <summary>The config the request was sent with.</summary>
     public AxiosRequestConfig Config { get; }
 
     /// <summary>The request that was sent, when it got that far.</summary>
@@ -24,10 +25,19 @@ public class AxiosException : Exception
     /// </summary>
     public AxiosResponse? Response { get; }
 
+    /// <summary>HTTP status of <see cref="Response"/>, when the server answered.</summary>
     public int? Status => Response?.Status;
 
+    /// <summary>Always true, like the <c>isAxiosError</c> flag of axios errors.</summary>
     public bool IsAxiosError => true;
 
+    /// <summary>Creates the error of a failed request.</summary>
+    /// <param name="message">Description of the failure.</param>
+    /// <param name="code">One of <see cref="AxiosErrorCodes"/>.</param>
+    /// <param name="config">The config the request was sent with.</param>
+    /// <param name="request">The request that was sent, when it got that far.</param>
+    /// <param name="response">The response, when the server answered.</param>
+    /// <param name="inner">The exception that caused this one.</param>
     public AxiosException(
         string message,
         string code,

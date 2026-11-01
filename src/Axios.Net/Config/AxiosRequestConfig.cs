@@ -40,6 +40,7 @@ public class AxiosRequestConfig
     /// </summary>
     public Dictionary<string, object?> Params { get; set; } = [];
 
+    /// <summary>Controls how <see cref="Params"/> are turned into a query string.</summary>
     public AxiosParamsSerializer? ParamsSerializer { get; set; }
 
     /// <summary>
@@ -92,15 +93,19 @@ public class AxiosRequestConfig
     /// </summary>
     public AxiosProxy? Proxy { get; set; }
 
+    /// <summary>Called as the request body is sent.</summary>
     public Action<AxiosProgressEvent>? OnUploadProgress { get; set; }
 
+    /// <summary>Called as the response body is received.</summary>
     public Action<AxiosProgressEvent>? OnDownloadProgress { get; set; }
 
     /// <summary>Config keys masked (case-insensitive, recursive) by <see cref="AxiosException.ToJSON"/>.</summary>
     public List<string>? Redact { get; set; }
 
+    /// <summary>Behaviors kept for compatibility with older axios versions.</summary>
     public AxiosTransitional? Transitional { get; set; }
 
+    /// <summary>Controls how object bodies are serialized as <c>multipart/form-data</c> or <c>application/x-www-form-urlencoded</c>.</summary>
     public AxiosFormSerializer? FormSerializer { get; set; }
 
     /// <summary>Cancels the request (axios' <c>signal</c>).</summary>

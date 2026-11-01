@@ -1,5 +1,6 @@
 namespace AxiosNet.Config;
 
+/// <summary>Behaviors kept for compatibility with older axios versions.</summary>
 public class AxiosTransitional
 {
     /// <summary

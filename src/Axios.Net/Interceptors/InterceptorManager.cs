@@ -1,5 +1,9 @@
 namespace AxiosNet.Interceptors;
 
+/// <summary>
+/// An ordered chain of interceptors: register one with <c>Use</c>, remove it with <c>Eject</c> or <c>Clear</c>.
+/// </summary>
+/// <typeparam name="T">What the chain transforms: the request config or the response.</typeparam>
 public sealed class InterceptorManager<T>
 {
     private readonly List<InterceptorHandler<T>> _handlers = [];

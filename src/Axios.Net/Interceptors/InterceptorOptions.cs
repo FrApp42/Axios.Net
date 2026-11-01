@@ -2,6 +2,7 @@ using AxiosNet.Config;
 
 namespace AxiosNet.Interceptors;
 
+/// <summary>Options of a single interceptor.</summary>
 public sealed class InterceptorOptions
 {
     /// <summary>

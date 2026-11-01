@@ -3,6 +3,7 @@ using AxiosNet.Models;
 
 namespace AxiosNet.Interceptors;
 
+/// <summary>The request and response interceptor chains of a client.</summary>
 public sealed class AxiosInterceptors
 {
     /// <summary>Runs before sending, last registered first (LIFO). Return the (modified) config.</summary>

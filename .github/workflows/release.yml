@@ -40,7 +40,7 @@ jobs:
 
       - name: Pack
         run: >
-          dotnet pack src/Axios.Net/Axios.Net.csproj
+          dotnet pack Axios.Net.slnx
           --configuration Release
           --no-build
           --output artifacts

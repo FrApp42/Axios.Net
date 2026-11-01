@@ -4,10 +4,11 @@ on:
   push:
     tags:
       - "v*.*.*"
+      - "di-v*.*.*"
 
 permissions:
   contents: write
-  id-token: write # GitHub OIDC token used by NuGet Trusted Publishing
+  id-token: write
 
 jobs:
   release:
@@ -25,29 +26,39 @@ jobs:
             8.0.x
             10.0.x
 
-      - name: Get version from tag
-        id: version
-        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+      - name: Resolve project and version
+        id: target
+        run: |
+          case "$GITHUB_REF_NAME" in
+            di-v*)
+              echo "project=src/Axios.Net.Extensions.DependencyInjection/Axios.Net.Extensions.DependencyInjection.csproj" >> "$GITHUB_OUTPUT"
+              echo "version=${GITHUB_REF_NAME#di-v}" >> "$GITHUB_OUTPUT"
+              echo "prop=DiVersion" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "project=src/Axios.Net/Axios.Net.csproj" >> "$GITHUB_OUTPUT"
+              echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+              echo "prop=Version" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
 
       - name: Restore
         run: dotnet restore Axios.Net.slnx
 
       - name: Build
-        run: dotnet build Axios.Net.slnx --configuration Release --no-restore -p:Version=${{ steps.version.outputs.version }}
+        run: dotnet build Axios.Net.slnx --configuration Release --no-restore -p:${{ steps.target.outputs.prop }}=${{ steps.target.outputs.version }}
 
       - name: Test
         run: dotnet test Axios.Net.slnx --configuration Release --no-build --verbosity normal
 
       - name: Pack
         run: >
-          dotnet pack Axios.Net.slnx
+          dotnet pack ${{ steps.target.outputs.project }}
           --configuration Release
           --no-build
           --output artifacts
-          -p:Version=${{ steps.version.outputs.version }}
+          -p:${{ steps.target.outputs.prop }}=${{ steps.target.outputs.version }}
 
-      # Trusted Publishing: exchanges the GitHub OIDC token for a short-lived (1 hour) NuGet API key,
-      # so it must run right before the push.
       - name: NuGet login
         id: login
         uses: NuGet/login@v1
@@ -73,7 +84,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           prerelease=""
-          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+          if [[ "${{ steps.target.outputs.version }}" == *-* ]]; then
             prerelease="--prerelease"
           fi
 

@@ -1,8 +1,10 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Axios.Net.Extensions.DependencyInjection/Axios.Net.Extensions.DependencyInjection.csproj" Id="15241509-07d4-46b5-960a-9c990cca2f3f" />
     <Project Path="src/Axios.Net/Axios.Net.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Axios.Net.Extensions.DependencyInjection.Tests/Axios.Net.Extensions.DependencyInjection.Tests.csproj" Id="530691f0-0edc-4ef5-ac66-a7214df8ba77" />
     <Project Path="tests/Axios.Net.Tests/Axios.Net.Tests.csproj" />
   </Folder>
 </Solution>

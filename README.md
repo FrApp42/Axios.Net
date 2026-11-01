@@ -128,6 +128,38 @@ api.Interceptors.Response.Clear();
 
 Request interceptors run last registered first, response interceptors first registered first.
 
+## Dependency injection
+
+```bash
+dotnet add package Axios.Net.Extensions.DependencyInjection
+```
+
+```csharp
+using AxiosNet.Extensions.DependencyInjection;
+
+services.AddAxios(c => c.BaseUrl = "https://api.test/v1/");
+```
+
+`AxiosClient` is registered as a singleton, so inject it where you need it:
+
+```csharp
+public class UserService(AxiosClient api)
+{
+    public Task<AxiosResponse<User>> Get(int id) => api.Get<User>($"/users/{id}");
+}
+```
+
+The client sends its requests through an [`IHttpClientFactory`](https://learn.microsoft.com/dotnet/core/extensions/httpclient-factory) named client called `Axios.Net`. Chain on it to add handlers, such as logging or resilience:
+
+```csharp
+services.AddHttpClient("Axios.Net")
+    .AddHttpMessageHandler<MyLoggingHandler>();
+```
+
+Because the handler comes from the factory, `MaxRedirects`, `Decompress` and `Proxy` are no longer read from the request config. Configure them on the primary handler instead (`ConfigurePrimaryHttpMessageHandler`).
+
+The singleton keeps the handler it was created with, so it is not recycled and DNS changes are not picked up for the lifetime of the app.
+
 ## Not applicable in .NET
 
 These axios options are tied to browsers or Node.js and have no equivalent: `adapter` (pass an

@@ -14,6 +14,10 @@ using AxiosNet.Serialization;
 
 namespace AxiosNet.Client;
 
+/// <summary>
+/// HTTP client with its own defaults and interceptors, the equivalent of an axios instance.
+/// Created with <see cref="Axios.Create"/>.
+/// </summary>
 public class AxiosClient
 {
     private readonly HttpClient _http;
@@ -23,8 +27,10 @@ public class AxiosClient
     /// <summary>Defaults applied to every request of this client.</summary>
     public AxiosRequestConfig Defaults { get; }
 
+    /// <summary>Request and response interceptors of this client.</summary>
     public AxiosInterceptors Interceptors { get; } = new();
 
+    /// <summary>Options used to serialize JSON bodies and to deserialize JSON responses.</summary>
     public JsonSerializerOptions JsonOptions { get; set; } = new(JsonSerializerDefaults.Web);
 
     /// <param name="defaults">Defaults merged into every request.</param>
@@ -44,24 +50,55 @@ public class AxiosClient
 
     #region Request aliases
 
+    /// <summary>Sends a GET request.</summary>
+    /// <typeparam name="T">Type the response body is read as.</typeparam>
+    /// <param name="url">Absolute URL, or relative to <see cref="AxiosRequestConfig.BaseUrl"/>.</param>
+    /// <param name="config">Config merged over the defaults for this request.</param>
     public Task<AxiosResponse<T>> Get<T>(string url, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Get, url, null, config);
 
+    /// <summary>Sends a DELETE request.</summary>
+    /// <typeparam name="T">Type the response body is read as.</typeparam>
+    /// <param name="url">Absolute URL, or relative to <see cref="AxiosRequestConfig.BaseUrl"/>.</param>
+    /// <param name="config">Config merged over the defaults for this request.</param>
     public Task<AxiosResponse<T>> Delete<T>(string url, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Delete, url, null, config);
 
+    /// <summary>Sends a HEAD request.</summary>
+    /// <typeparam name="T">Type the response body is read as.</typeparam>
+    /// <param name="url">Absolute URL, or relative to <see cref="AxiosRequestConfig.BaseUrl"/>.</param>
+    /// <param name="config">Config merged over the defaults for this request.</param>
     public Task<AxiosResponse<T>> Head<T>(string url, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Head, url, null, config);
 
+    /// <summary>Sends an OPTIONS request.</summary>
+    /// <typeparam name="T">Type the response body is read as.</typeparam>
+    /// <param name="url">Absolute URL, or relative to <see cref="AxiosRequestConfig.BaseUrl"/>.</param>
+    /// <param name="config">Config merged over the defaults for this request.</param>
     public Task<AxiosResponse<T>> Options<T>(string url, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Options, url, null, config);
 
+    /// <summary>Sends a POST request.</summary>
+    /// <typeparam name="T">Type the response body is read as.</typeparam>
+    /// <param name="url">Absolute URL, or relative to <see cref="AxiosRequestConfig.BaseUrl"/>.</param>
+    /// <param name="data">Request body, serialized according to its type.</param>
+    /// <param name="config">Config merged over the defaults for this request.</param>
     public Task<AxiosResponse<T>> Post<T>(string url, object? data = null, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Post, url, data, config);
 
+    /// <summary>Sends a PUT request.</summary>
+    /// <typeparam name="T">Type the response body is read as.</typeparam>
+    /// <param name="url">Absolute URL, or relative to <see cref="AxiosRequestConfig.BaseUrl"/>.</param>
+    /// <param name="data">Request body, serialized according to its type.</param>
+    /// <param name="config">Config merged over the defaults for this request.</param>
     public Task<AxiosResponse<T>> Put<T>(string url, object? data = null, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Put, url, data, config);
 
+    /// <summary>Sends a PATCH request.</summary>
+    /// <typeparam name="T">Type the response body is read as.</typeparam>
+    /// <param name="url">Absolute URL, or relative to <see cref="AxiosRequestConfig.BaseUrl"/>.</param>
+    /// <param name="data">Request body, serialized according to its type.</param>
+    /// <param name="config">Config merged over the defaults for this request.</param>
     public Task<AxiosResponse<T>> Patch<T>(string url, object? data = null, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Patch, url, data, config);
 
@@ -69,9 +106,19 @@ public class AxiosClient
     public Task<AxiosResponse<T>> PostForm<T>(string url, object? data = null, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Post, url, data, AsForm(config));
 
+    /// <summary>Sends a PUT request with <c>Content-Type: multipart/form-data</c>.</summary>
+    /// <typeparam name="T">Type the response body is read as.</typeparam>
+    /// <param name="url">Absolute URL, or relative to <see cref="AxiosRequestConfig.BaseUrl"/>.</param>
+    /// <param name="data">Request body, serialized according to its type.</param>
+    /// <param name="config">Config merged over the defaults for this request.</param>
     public Task<AxiosResponse<T>> PutForm<T>(string url, object? data = null, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Put, url, data, AsForm(config));
 
+    /// <summary>Sends a PATCH request with <c>Content-Type: multipart/form-data</c>.</summary>
+    /// <typeparam name="T">Type the response body is read as.</typeparam>
+    /// <param name="url">Absolute URL, or relative to <see cref="AxiosRequestConfig.BaseUrl"/>.</param>
+    /// <param name="data">Request body, serialized according to its type.</param>
+    /// <param name="config">Config merged over the defaults for this request.</param>
     public Task<AxiosResponse<T>> PatchForm<T>(string url, object? data = null, AxiosRequestConfig? config = null) =>
         Send<T>(HttpMethod.Patch, url, data, AsForm(config));
 

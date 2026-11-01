@@ -2,10 +2,13 @@ using AxiosNet.Config;
 
 namespace AxiosNet.Models;
 
+/// <summary>The response to a request, with an untyped body.</summary>
 public class AxiosResponse
 {
+    /// <summary>HTTP status code.</summary>
     public int Status { get; init; }
 
+    /// <summary>Reason phrase sent by the server.</summary>
     public string? StatusText { get; init; }
 
     /// <summary>Response and content headers.</summary>
